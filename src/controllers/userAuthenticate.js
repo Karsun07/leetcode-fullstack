@@ -2,6 +2,7 @@ const validate=require("../utils/validate");
 const bcrypt=require("bcrypt");
 const jwt=require("jsonwebtoken");
 const User = require("../models/user");
+const redisClient = require("../config/redis");
 
 const register=async (req,res)=>{
     try{
@@ -35,7 +36,10 @@ const login=async (req,res)=>{
 
         // find the user
         const user=await User.findOne({emailId});
-        const isMatch=bcrypt.compare(password,user.password);
+        if(!user){
+            throw new Error("Invalid Credential");
+        }
+        const isMatch=await bcrypt.compare(password,user.password);
 
         if(!isMatch){
             throw new Error("Invalid Credential");
@@ -45,15 +49,24 @@ const login=async (req,res)=>{
         res.status(200).send("Logged In Succeessfully");
     }
     catch(err){
-        console.log("error"+err);
+        res.status(401).send("Error: "+err.message);
     }
 }
-const logout=(req,res)=>{
+const logout=async (req,res)=>{
     try{
-
+        const {token}=req.cookies;
+        const payload=jwt.decode(token);
+        
+        // token add in redis blocklist and when to remove it from the blocklist
+        await redisClient.set(`token:${token}`,'Blocked');
+        await redisClient.expireAt(`token:${token}`,payload.exp);
+        
+        // delete the cookies right now
+        res.cookie("token",null,{expires:new Date(Date.now())});
+        res.send("Logged out Successfully");
     }
     catch(err){
-        
+        res.status(503).send("Error: "+err);
     }
 }
 
