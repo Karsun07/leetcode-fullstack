@@ -2,7 +2,7 @@ const { createClient } = require("redis");
 
 const redisClient = createClient({
     username: "default",
-    password: "udwDUsrD6fEBuRUmkw62UJQikQd1lNzD",
+    password: process.env.REDIS_PASSWORD,
     socket: {
         host: "megastrong-hyperneat-affectionate-13540.db.redis.io",
         port: 11128
