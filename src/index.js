@@ -3,10 +3,16 @@ const app=express();
 require('dotenv').config();
 const main=require("./config/database");
 const cookieParser=require("cookie-parser");
+const authRouter=require("./routes/userAuth");
+
 
 app.use(express.json());
 app.use(cookieParser());
 
+app.get("/", (req, res) => {
+    res.send("Server is running");
+});
+app.use("/user",authRouter);
 
 main()
 .then(async ()=>{

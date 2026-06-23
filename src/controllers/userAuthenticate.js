@@ -3,12 +3,12 @@ const bcrypt=require("bcrypt");
 const jwt=require("jsonwebtoken");
 const User = require("../models/user");
 
-const register=(req,res)=>{
+const register=async (req,res)=>{
     try{
         // validate firstName, email and Password
         validate(req.body);
         const {firstName,emailId,password}=req.body;
-        req.body.password=bcrypt.hash(password,10);
+        req.body.password=await  bcrypt.hash(password,10);
         
         // create user
         const user=await User.create(req.body);
@@ -23,7 +23,7 @@ const register=(req,res)=>{
     }
 }
 
-const login=(req,res)=>{
+const login=async (req,res)=>{
     try{
         const {emailId,password}=req.body;
         if(!emailId){
@@ -45,6 +45,16 @@ const login=(req,res)=>{
         res.status(200).send("Logged In Succeessfully");
     }
     catch(err){
-
+        console.log("error"+err);
     }
 }
+const logout=(req,res)=>{
+    try{
+
+    }
+    catch(err){
+        
+    }
+}
+
+module.exports={register,login,logout};
