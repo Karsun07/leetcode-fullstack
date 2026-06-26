@@ -116,7 +116,7 @@ const getProblemById=async (req,res)=>{
 
         if (!id) return res.status(400).send("Id is Missing");
 
-        const targetProblem=await Problem.findById(id);
+        const targetProblem=await Problem.findById(id).select('_id title description difficulty tags visibleTestCases startCode');
         if(!targetProblem) return res.status(404).send("Problem is Missing");
         res.status(200).send(targetProblem);
     }
