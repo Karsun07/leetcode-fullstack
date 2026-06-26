@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
     res.send("Server is running");
 });
 app.use("/user",authRouter);
-app.use("/user",problemRouter);
+app.use("/problem",problemRouter);
 
 
 
