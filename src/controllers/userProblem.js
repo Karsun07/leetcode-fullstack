@@ -110,5 +110,38 @@ const deleteProblem=async (req,res)=>{
     }
 }
 
+const getProblemById=async (req,res)=>{
+    try{
+        const {id}=req.params;
 
-module.exports = { createProblem, updateProblem,deleteProblem};
+        if (!id) return res.status(400).send("Id is Missing");
+
+        const targetProblem=await Problem.findById(id);
+        if(!targetProblem) return res.status(404).send("Problem is Missing");
+        res.status(200).send(targetProblem);
+    }
+    catch(err){
+        res.status(500).send("Error: "+err);
+    }
+}
+
+const getAllProblem=async (req,res)=>{
+    try{
+        const getProblems=await Problem.find({});
+        if(!getProblems.length) return res.status(404).send("Problem is Missing");
+        res.status(200).send(targetProblem);
+    }
+    catch(err){
+        res.status(500).send("Error: "+err);
+    }
+}
+
+// we can also find problems with specfic req . 
+// problem that has >100 votes and tags as array and hash
+// Problem.find({
+//     votes:{$gte :100},
+//     tags:{${in:["array","hash"]}
+// })
+
+
+module.exports = { createProblem, updateProblem,deleteProblem,getProblemById,getAllProblem};
