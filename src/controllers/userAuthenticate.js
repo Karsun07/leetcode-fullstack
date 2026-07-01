@@ -3,6 +3,7 @@ const bcrypt=require("bcrypt");
 const jwt=require("jsonwebtoken");
 const User = require("../models/user");
 const redisClient = require("../config/redis");
+const Submission=require("../models/submission");
 
 const register=async (req,res)=>{
     try{
@@ -93,5 +94,25 @@ const adminRegister = async(req,res)=>{
     }
 }
 
+const deleteProfile=async (req,res)=>{
+    try{
+        const userId=req.result._id;
+        // user delete
+        await User.findByIdAndDelete(userId);
+        // M-1
+        // user's submissions delete
+        // await Submission.deleteMany({userId});
+        // M-2
+        // i added userSchema.post('findOneAndDelete',async function (userInfo){submision.delet})
+        // this is post operation it is implemented after User.findByIdANdDelete 
+        // pre operation run before     
+        res.status(200).send("Deleted Successfully");
 
-module.exports = {register, login,logout,adminRegister};
+    }
+    catch(err){
+        res.status(500).send("Internal Server Error");
+    }
+
+}
+
+module.exports = {register, login,logout,adminRegister,deleteProfile};

@@ -121,7 +121,7 @@ const runCode=async (req,res)=>{
 
     //    Fetch the problem from database
     const problem = await Problem.findById(problemId);
-  
+    if (!problem) return res.status(404).send("Problem not found");
 
   
 

@@ -45,6 +45,13 @@ const userSchema = new Schema({
     timestamps:true
 });
 
+// this will run after we delete the user from from db 
+// post => after findByIdAndDelete , pre =>before findByIdAndDelete
+userSchema.post('findOneAndDelete',async function (userInfo){
+    if(userInfo){
+        await mongoose.model("submission").deleteMany({userId:userInfo._id});
+    }
+})
 
 const User = mongoose.model("user",userSchema);
 
